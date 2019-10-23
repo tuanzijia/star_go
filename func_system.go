@@ -72,10 +72,10 @@ func systemExit() {
 	})
 
 	// 通知所有协程退出
-	stopChanForLog <- struct{}{}
-	for i := int32(0); i < goCount; i++ {
-		stopChanForLog <- struct{}{}
-	}
+	//stopChanForLog <- struct{}{}
+	//for i := int32(0); i < goCount; i++ {
+	//	stopChanForLog <- struct{}{}
+	//}
 
 	// 更新停止信号
 	if !atomic.CompareAndSwapInt32(&allForStopSignal, 0, 1) {
