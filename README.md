@@ -34,7 +34,7 @@ starGo是一款高性能、分布式、轻量级、微服务的游戏服务器�
     
     func main() {
     	// 开启日志
-    	starGo.NewLog("log", starGo.Debug)
+    	starGo.StartLog("log", starGo.Debug)
     
     	// 启动服务器
     	starGo.Start()
