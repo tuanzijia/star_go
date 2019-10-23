@@ -7,7 +7,7 @@ import (
 )
 
 func TestDebugLog(t *testing.T) {
-	NewLog("log", Debug)
+	StartLog("log", Debug)
 
 	DebugLog("qwe")
 	go func() {
@@ -33,7 +33,7 @@ func TestDebugLog(t *testing.T) {
 }
 
 func TestCsv_UnMarshalFile(t *testing.T) {
-	NewLog("log", Debug)
+	StartLog("log", Debug)
 	type abc struct {
 		Id   int32
 		Name string
@@ -48,7 +48,7 @@ func TestCsv_UnMarshalFile(t *testing.T) {
 
 func TestNatPublish(t *testing.T) {
 	StartNatConn("127.0.0.1:4222")
-	NewLog("log", Debug)
+	StartLog("log", Debug)
 
 	SubscribeQueue("hello", "h1", func(message []byte) {
 		DebugLog("这是队列模式h1.1收到的消息,消息:%v", string(message))

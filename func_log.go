@@ -86,7 +86,7 @@ func reorganizeLog(nowTime time.Time) {
 	}
 }
 
-func NewLog(dirPatch string, lv logLv) {
+func StartLog(dirPatch string, lv logLv) {
 	logOnce.Do(func() {
 		logNowLv = lv
 		logDirPath = dirPatch
