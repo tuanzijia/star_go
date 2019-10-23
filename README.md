@@ -26,10 +26,33 @@ starGo是一款高性能、分布式、轻量级、微服务的游戏服务器�
     go get github.com/satori/go.uuid
     go get github.com/zhnxin/csvreader
 #### 使用说明
-    
-#### 参与贡献
+最简单的一个例子：
 
-1. Fork 本仓库
-2. 新建 Feat_xxx 分支
-3. 提交代码
-4. 新建 Pull Request
+    import (
+    	"github.com/tuanzijia/star_go"
+    )
+    
+    func main() {
+    	// 开启日志
+    	starGo.NewLog("log", starGo.Debug)
+    
+    	// 启动服务器
+    	starGo.Start()
+    
+    	// 开启tcp连接
+    	err := starGo.StartTcpServer("127.0.0.1:9999", nil, 4)
+    	if err != nil {
+    		starGo.ErrorLog(err)
+    		return
+    	}
+    
+    	// 开启nats连接
+    	starGo.StartNatConn("127.0.0.1:4222")
+    
+    	// 等待系统退出
+    	starGo.WaitForSystemExit()
+    }
+#### 写在最后
+我的想法是打造一款高性能，分布式，微服务,轻量级的游戏服务器框架初次写开源框架，肯定有很多不足和考虑不到的地方，如果有什么建议和意见欢迎加群提出。
+
+starGo 游戏服务器框架交流群 937191977
