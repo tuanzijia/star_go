@@ -41,9 +41,12 @@ var (
 	systemExitFunc   []func()
 	systemReloadFunc []func()
 
-	clientMap            sync.Map
-	receiveDataHeaderLen int32
-	handlerReceiveFunc   CallBack
+	tcpClientMap            sync.Map
+	udpClientMap            sync.Map
+	tcpReceiveDataHeaderLen int32
+	udpReceiveDataHeaderLen int32
+	tcpHandlerReceiveFunc   ClientCallBack
+	udpHandlerReceiveFunc   ClientCallBack
 
 	natChMap sync.Map
 	natConn  *nats.Conn

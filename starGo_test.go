@@ -2,6 +2,7 @@ package starGo
 
 import (
 	"fmt"
+	"sync"
 	"testing"
 	"time"
 )
@@ -103,4 +104,23 @@ func TestNatPublish(t *testing.T) {
 		}
 	}()
 	WaitForSystemExit()
+}
+
+func TestChannel(t *testing.T) {
+	var wg sync.WaitGroup
+	c := make(chan struct{})
+	fmt.Println(1)
+	wg.Add(1)
+	go func() {
+		<-c
+		wg.Done()
+		fmt.Println(2)
+	}()
+
+	go func() {
+		time.Sleep(3 * time.Second)
+		close(c)
+	}()
+	fmt.Println(3)
+	wg.Wait()
 }

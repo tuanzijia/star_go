@@ -2,8 +2,8 @@ package starGo
 
 import "net"
 
-func StartTcpServer(addr string, handler CallBack, headerLen int32) error {
-	DebugLog("开始监听地址:%v", addr)
+func StartTcpServer(addr string, handler ClientCallBack, headerLen int32) error {
+	DebugLog("开始监听Tcp地址:%v", addr)
 	listen, err := net.Listen("tcp", addr)
 	if err != nil {
 		ErrorLog("tcp监听地址%v出错,错误信息:%v", addr, err)
@@ -27,8 +27,8 @@ func StartTcpServer(addr string, handler CallBack, headerLen int32) error {
 			}
 
 			// 新注册客户端
-			client := newClient(c)
-			RegisterClient(client)
+			client := newTcpClient(c)
+			RegisterTcpClient(client)
 			client.start()
 
 			DebugLog("收到客户端:%v的连接请求", c.RemoteAddr().String())
@@ -36,13 +36,22 @@ func StartTcpServer(addr string, handler CallBack, headerLen int32) error {
 	})
 
 	// 注册回调方法
-	handlerReceiveFunc = handler
+	tcpHandlerReceiveFunc = handler
 
 	// 记录头部数据长度
-	receiveDataHeaderLen = headerLen
+	tcpReceiveDataHeaderLen = headerLen
 
 	// 启动客户端处理协程
-	clearExpireClient()
+	clearExpireTcpClient()
 
 	return nil
+}
+
+func GetTcpClient(addr string) *Client {
+	client, exists := tcpClientMap.Load(addr)
+	if !exists {
+		return nil
+	}
+
+	return client.(*Client)
 }

@@ -5,6 +5,8 @@ import (
 	"github.com/nats-io/nats.go"
 )
 
+type NatCallBack func(message []byte)
+
 func StartNatConn(addr string) {
 	nc, err := nats.Connect(addr)
 
@@ -17,7 +19,7 @@ func StartNatConn(addr string) {
 }
 
 // 管道模式订阅
-func SubscribeChannel(channel string, channelCount int32, cb CallBack) {
+func SubscribeChannel(channel string, channelCount int32, cb NatCallBack) {
 	_, exists := natChMap.Load(channel)
 	if exists {
 		ErrorLog("%v通道已被订阅", channel)
@@ -52,7 +54,7 @@ func SubscribeChannel(channel string, channelCount int32, cb CallBack) {
 }
 
 // 异步模式订阅
-func SubscribeAsync(channel string, cb CallBack) {
+func SubscribeAsync(channel string, cb NatCallBack) {
 	_, err := natConn.Subscribe(channel, func(msg *nats.Msg) {
 		Go(func(Stop chan struct{}) {
 			select {
@@ -70,7 +72,7 @@ func SubscribeAsync(channel string, cb CallBack) {
 }
 
 // 队列模式订阅
-func SubscribeQueue(channel, queue string, cb CallBack) {
+func SubscribeQueue(channel, queue string, cb NatCallBack) {
 	_, err := natConn.QueueSubscribe(channel, queue, func(msg *nats.Msg) {
 		Go(func(Stop chan struct{}) {
 			select {

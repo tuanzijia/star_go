@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-type CallBack func(message []byte)
+type ClientCallBack func(message []byte, addr string)
 
 type Client struct {
 	conn         net.Conn
@@ -18,7 +18,7 @@ type Client struct {
 	mutex        sync.RWMutex
 }
 
-func newClient(conn net.Conn) *Client {
+func newTcpClient(conn net.Conn) *Client {
 	return &Client{
 		conn:         conn,
 		stop:         false,
@@ -91,7 +91,7 @@ func (c *Client) GetReceiveData(headerLen int32) (message []byte, exists bool) {
 
 func (c *Client) AppendReceiveQueue(message []byte) {
 	c.mutex.Lock()
-	c.mutex.Unlock()
+	defer c.mutex.Unlock()
 	c.receiveQueue = append(c.receiveQueue, message...)
 }
 
@@ -101,7 +101,11 @@ func (c *Client) AppendSendQueue(message []byte) {
 
 func (c *Client) start() {
 	Go(func(Stop chan struct{}) {
-		for !c.stop {
+		defer func() {
+			c.GetConn().Close()
+			c.SetStop()
+		}()
+		for !c.GetStop() {
 			readBytes := make([]byte, 1024)
 			n, err := c.GetConn().Read(readBytes)
 			if err != nil {
@@ -115,21 +119,23 @@ func (c *Client) start() {
 
 			Go(func(Stop chan struct{}) {
 				c.AppendReceiveQueue(readBytes[:n])
-				message, exists := c.GetReceiveData(receiveDataHeaderLen)
+				message, exists := c.GetReceiveData(tcpReceiveDataHeaderLen)
 				if exists {
-					handlerReceiveFunc(message)
+					tcpHandlerReceiveFunc(message, c.GetConn().RemoteAddr().String())
 				}
 			})
 		}
 	})
 	Go(func(Stop chan struct{}) {
-		for !c.stop {
+		for !c.GetStop() {
 			select {
 			case message := <-c.sendCh:
 				Go(func(Stop chan struct{}) {
 					_, err := c.GetConn().Write(message)
 					if err != nil {
 						ErrorLog("向客户端:%v发送数据出错,错误信息:%v", c.GetConn().RemoteAddr().String(), err)
+						c.GetConn().Close()
+						c.SetStop()
 					}
 				})
 			case <-Stop:
@@ -139,17 +145,17 @@ func (c *Client) start() {
 	})
 }
 
-func RegisterClient(c *Client) {
-	clientMap.Store(c.GetConn().RemoteAddr().String(), c)
+func RegisterTcpClient(c *Client) {
+	tcpClientMap.Store(c.GetConn().RemoteAddr().String(), c)
 }
 
-func clearExpireClient() {
+func clearExpireTcpClient() {
 	Go(func(Stop chan struct{}) {
 		for allForStopSignal == 0 {
 			t := time.NewTicker(5 * time.Second)
 			<-t.C
 			removeClient := make([]string, 0)
-			clientMap.Range(func(key, value interface{}) bool {
+			tcpClientMap.Range(func(key, value interface{}) bool {
 				client := value.(*Client)
 				if client.GetActiveTime()+clientExpireTime <= time.Now().Unix() {
 					removeClient = append(removeClient, key.(string))
@@ -160,7 +166,7 @@ func clearExpireClient() {
 
 			// 移除过期的客户端
 			for _, key := range removeClient {
-				value, exists := clientMap.Load(key)
+				value, exists := tcpClientMap.Load(key)
 				if !exists {
 					continue
 				}
@@ -174,7 +180,7 @@ func clearExpireClient() {
 				// 移除过期客户端
 				client.SetStop()
 				client.GetConn().Close()
-				clientMap.Delete(key)
+				tcpClientMap.Delete(key)
 			}
 		}
 	})

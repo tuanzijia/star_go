@@ -62,12 +62,18 @@ func systemExit() {
 	}
 
 	// 关闭所有tcp连接
-	clientMap.Range(func(key, value interface{}) bool {
+	tcpClientMap.Range(func(key, value interface{}) bool {
 		client := value.(*Client)
 		client.SetStop()
 		client.GetConn().Close()
-		clientMap.Delete(key)
+		tcpClientMap.Delete(key)
 
+		return true
+	})
+
+	// 关闭所有udp连接
+	udpClientMap.Range(func(key, value interface{}) bool {
+		udpClientMap.Delete(key)
 		return true
 	})
 
