@@ -41,6 +41,8 @@ func timerStart() {
 			case <-Stop:
 				return
 			default:
+				t := time.NewTicker(1 * time.Second)
+				<-t.C
 				nowTime := time.Now()
 
 				// 整分钟数开始执行
@@ -63,7 +65,6 @@ func timerStart() {
 						reorganizeLog(nowTime)
 					}
 				}
-				time.Sleep(1 * time.Second)
 			}
 		}
 	})
