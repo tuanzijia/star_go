@@ -16,7 +16,7 @@ type logObj struct {
 
 func logStart() {
 	goForLog(func(Stop chan struct{}) {
-		for allForStopSignal == 0 {
+		for logForStopSignal == 0 {
 			select {
 			case <-Stop:
 				return

@@ -124,3 +124,21 @@ func TestChannel(t *testing.T) {
 	fmt.Println(3)
 	wg.Wait()
 }
+
+func TestWebSocketClient(t *testing.T) {
+	StartLog("log", Debug)
+
+	err := StartTcpServer("127.0.0.1:9999", nil, 4)
+	if err != nil {
+		ErrorLog(err)
+		return
+	}
+
+	go func() {
+		time.Sleep(5 * time.Second)
+		fmt.Println("开始关闭通道")
+		systemExit()
+	}()
+
+	WaitForSystemExit()
+}

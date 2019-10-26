@@ -43,13 +43,13 @@ func goForLog(f func(Stop chan struct{})) {
 		}
 	}()
 
-	if allForStopSignal != 0 {
+	if logForStopSignal != 0 {
 		return
 	}
 
-	waitAllGroup.Add(1)
+	waitLogGroup.Add(1)
 	go func() {
 		f(stopChanForLog)
-		waitAllGroup.Done()
+		waitLogGroup.Done()
 	}()
 }

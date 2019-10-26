@@ -12,6 +12,7 @@ var (
 	maxBigInt64Edge  = big.NewInt(0).Add(big.NewInt(math.MaxInt64), big.NewInt(1))
 	baseString       = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	allForStopSignal int32
+	logForStopSignal int32
 
 	logDirPath   string
 	logFileMap   map[logLv]*os.File
@@ -28,6 +29,7 @@ var (
 	}
 
 	waitAllGroup   sync.WaitGroup
+	waitLogGroup   sync.WaitGroup
 	goCount        int32
 	goId           int32
 	stopChanForGo  = make(chan struct{})
@@ -43,10 +45,13 @@ var (
 
 	tcpClientMap            sync.Map
 	udpClientMap            sync.Map
+	wsClientMap             sync.Map
 	tcpReceiveDataHeaderLen int32
 	udpReceiveDataHeaderLen int32
+	wsReceiveDataHeaderLen  int32
 	tcpHandlerReceiveFunc   ClientCallBack
 	udpHandlerReceiveFunc   ClientCallBack
+	wsHandlerReceiveFunc    ClientCallBack
 
 	natChMap sync.Map
 	natConn  *nats.Conn

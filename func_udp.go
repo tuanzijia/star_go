@@ -5,6 +5,7 @@ import (
 )
 
 func StartUdpServer(addr string, handler ClientCallBack, headerLen int32) error {
+	DebugLog("开始监听Udp地址:%v", addr)
 	udpAddr, err := net.ResolveUDPAddr("udp", addr)
 	if err != nil {
 		ErrorLog("监听Udp地址:%v失败,错误信息:%v", addr, err)

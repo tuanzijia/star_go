@@ -1,7 +1,6 @@
 package starGo
 
 import (
-	"fmt"
 	"os"
 	"os/signal"
 	"sync/atomic"
@@ -29,13 +28,13 @@ func Start() {
 
 				DebugLog("收到重启的信号，重新加载配置完成")
 			} else {
-				fmt.Println("收到退出程序的信号，开始退出……")
+				DebugLog("收到退出程序的信号，开始退出……")
 
 				// 调用退出的方法
 				systemExit()
 				close(sign)
 
-				fmt.Println("收到退出程序的信号，退出完成……")
+				DebugLog("收到退出程序的信号，退出完成……")
 
 				// 一旦收到信号，则表明管理员希望退出程序，则先保存信息，然后退出
 				os.Exit(0)
@@ -46,6 +45,12 @@ func Start() {
 
 func WaitForSystemExit() {
 	waitAllGroup.Wait()
+
+	if !atomic.CompareAndSwapInt32(&logForStopSignal, 0, 1) {
+		return
+	}
+	close(stopChanForLog)
+	waitLogGroup.Wait()
 }
 
 func RegisterSystemExitFunc(f func()) {
@@ -60,6 +65,12 @@ func systemExit() {
 	for _, f := range systemExitFunc {
 		f()
 	}
+
+	// 更新停止信号
+	if !atomic.CompareAndSwapInt32(&allForStopSignal, 0, 1) {
+		return
+	}
+	close(stopChanForGo)
 
 	// 关闭所有tcp连接
 	tcpClientMap.Range(func(key, value interface{}) bool {
@@ -77,23 +88,14 @@ func systemExit() {
 		return true
 	})
 
-	// 通知所有协程退出
-	//stopChanForLog <- struct{}{}
-	//for i := int32(0); i < goCount; i++ {
-	//	stopChanForLog <- struct{}{}
-	//}
-
-	// 更新停止信号
-	if !atomic.CompareAndSwapInt32(&allForStopSignal, 0, 1) {
-		return
-	}
-
-	// 关闭所有通道
-	close(stopChanForGo)
-	close(stopChanForLog)
-	close(logCh)
-
-	fmt.Println("服务器停止")
+	// 关闭所有webSocket连接
+	wsClientMap.Range(func(key, value interface{}) bool {
+		client := value.(*WebSocketClient)
+		client.SetStop()
+		client.GetConn().Close()
+		wsClientMap.Delete(key)
+		return true
+	})
 }
 
 func systemReload() {
