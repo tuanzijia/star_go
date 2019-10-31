@@ -11,57 +11,20 @@ import (
 	"syscall"
 )
 
-// Start ...启动信号管理器
-//func Start() {
-//	Go(func(Stop chan struct{}) {
-//		sign := make(chan os.Signal)
-//		//signal.Notify(sign, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP)
-//		signal.Notify(sign, os.Interrupt, os.Kill)
-//
-//		for allForStopSignal == 0 {
-//			// 准备接收信息
-//			tempSig := <-sign
-//
-//			// 输出信号
-//			DebugLog("收到信号:%v", sign)
-//
-//			if tempSig == syscall.SIGHUP {
-//				DebugLog("收到重启的信号，准备重新加载配置")
-//
-//				// 重新加载
-//				systemReload()
-//
-//				DebugLog("收到重启的信号，重新加载配置完成")
-//			} else {
-//				DebugLog("收到退出程序的信号，开始退出……")
-//
-//				// 调用退出的方法
-//				systemExit()
-//				close(sign)
-//
-//				DebugLog("收到退出程序的信号，退出完成……")
-//
-//				// 一旦收到信号，则表明管理员希望退出程序，则先保存信息，然后退出
-//				os.Exit(0)
-//			}
-//		}
-//	})
-//}
-
 func WaitForSystemExit() {
 	sign := make(chan os.Signal)
 	signal.Notify(sign, os.Interrupt, os.Kill, syscall.SIGTERM)
 	<-sign
 	DebugLog("收到退出信号")
-	fmt.Println("收到退出信号")
 	systemExit()
-	waitAllGroup.Wait()
 
+	waitAllGroup.Wait()
 	if !atomic.CompareAndSwapInt32(&logForStopSignal, 0, 1) {
 		return
 	}
 	close(stopChanForLog)
 	waitLogGroup.Wait()
+	fmt.Println("服务器已关闭")
 }
 
 func RegisterSystemExitFunc(f func()) {
@@ -73,16 +36,17 @@ func RegisterSystemReloadFunc(f func()) {
 }
 
 func systemExit() {
+	DebugLog("调用退出时方法")
 	for _, f := range systemExitFunc {
 		f()
 	}
-
+	DebugLog("更新停止信号")
 	// 更新停止信号
 	if !atomic.CompareAndSwapInt32(&allForStopSignal, 0, 1) {
 		return
 	}
 	close(stopChanForGo)
-
+	DebugLog("关闭所有连接")
 	// 关闭所有tcp连接
 	tcpClientMap.Range(func(key, value interface{}) bool {
 		client := value.(*Client)
@@ -107,6 +71,7 @@ func systemExit() {
 		wsClientMap.Delete(key)
 		return true
 	})
+	DebugLog("系统退出方法调用完成")
 }
 
 func systemReload() {
