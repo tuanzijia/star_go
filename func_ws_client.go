@@ -100,7 +100,7 @@ func (c *WebSocketClient) start() {
 
 			Go(func(Stop chan struct{}) {
 				message, exists := c.GetReceiveData(wsReceiveDataHeaderLen, data)
-				if exists {
+				if exists && wsHandlerReceiveFunc != nil {
 					wsHandlerReceiveFunc(message, c.GetConn().RemoteAddr().String())
 				}
 			})

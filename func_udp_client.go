@@ -90,7 +90,7 @@ func (c *UdpClient) read() {
 						return
 					default:
 						message, exists := c.GetReceiveData(udpReceiveDataHeaderLen, receiveData)
-						if exists {
+						if exists && udpHandlerReceiveFunc != nil {
 							udpHandlerReceiveFunc(message, c.GetAddr().String())
 						}
 					}

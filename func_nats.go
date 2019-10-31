@@ -46,7 +46,9 @@ func SubscribeChannel(channel string, channelCount int32, cb NatCallBack) {
 				case <-Stop:
 					return
 				case msg := <-ch:
-					cb(msg.Data)
+					if cb != nil {
+						cb(msg.Data)
+					}
 				}
 			}
 		})
@@ -61,7 +63,9 @@ func SubscribeAsync(channel string, cb NatCallBack) {
 			case <-Stop:
 				return
 			default:
-				cb(msg.Data)
+				if cb != nil {
+					cb(msg.Data)
+				}
 			}
 		})
 	})
@@ -79,7 +83,9 @@ func SubscribeQueue(channel, queue string, cb NatCallBack) {
 			case <-Stop:
 				return
 			default:
-				cb(msg.Data)
+				if cb != nil {
+					cb(msg.Data)
+				}
 			}
 		})
 	})

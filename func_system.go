@@ -2,7 +2,10 @@ package starGo
 
 import (
 	"os"
+	"os/exec"
 	"os/signal"
+	"path/filepath"
+	"strings"
 	"sync/atomic"
 	"syscall"
 )
@@ -101,5 +104,38 @@ func systemExit() {
 func systemReload() {
 	for _, f := range systemReloadFunc {
 		f()
+	}
+}
+
+func Daemon(skip ...string) {
+	if os.Getppid() != 1 {
+		filePath, _ := filepath.Abs(os.Args[0])
+		newCmd := []string{os.Args[0]}
+		add := 0
+		for _, v := range os.Args[1:] {
+			if add == 1 {
+				add = 0
+				continue
+			} else {
+				add = 0
+			}
+			for _, s := range skip {
+				if strings.Contains(v, s) {
+					if strings.Contains(v, "--") {
+						add = 2
+					} else {
+						add = 1
+					}
+					break
+				}
+			}
+			if add == 0 {
+				newCmd = append(newCmd, v)
+			}
+		}
+		DebugLog("后台运行参数:%v", newCmd)
+		cmd := exec.Command(filePath)
+		cmd.Args = newCmd
+		cmd.Start()
 	}
 }

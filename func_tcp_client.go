@@ -120,7 +120,7 @@ func (c *Client) start() {
 			Go(func(Stop chan struct{}) {
 				c.AppendReceiveQueue(readBytes[:n])
 				message, exists := c.GetReceiveData(tcpReceiveDataHeaderLen)
-				if exists {
+				if exists && tcpHandlerReceiveFunc != nil {
 					tcpHandlerReceiveFunc(message, c.GetConn().RemoteAddr().String())
 				}
 			})
