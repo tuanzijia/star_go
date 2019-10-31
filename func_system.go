@@ -1,6 +1,7 @@
 package starGo
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -11,42 +12,49 @@ import (
 )
 
 // Start ...启动信号管理器
-func Start() {
-	Go(func(Stop chan struct{}) {
-		sign := make(chan os.Signal)
-		signal.Notify(sign, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP)
-
-		for allForStopSignal == 0 {
-			// 准备接收信息
-			tempSig := <-sign
-
-			// 输出信号
-			DebugLog("收到信号:%v", sign)
-
-			if tempSig == syscall.SIGHUP {
-				DebugLog("收到重启的信号，准备重新加载配置")
-
-				// 重新加载
-				systemReload()
-
-				DebugLog("收到重启的信号，重新加载配置完成")
-			} else {
-				DebugLog("收到退出程序的信号，开始退出……")
-
-				// 调用退出的方法
-				systemExit()
-				close(sign)
-
-				DebugLog("收到退出程序的信号，退出完成……")
-
-				// 一旦收到信号，则表明管理员希望退出程序，则先保存信息，然后退出
-				os.Exit(0)
-			}
-		}
-	})
-}
+//func Start() {
+//	Go(func(Stop chan struct{}) {
+//		sign := make(chan os.Signal)
+//		//signal.Notify(sign, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP)
+//		signal.Notify(sign, os.Interrupt, os.Kill)
+//
+//		for allForStopSignal == 0 {
+//			// 准备接收信息
+//			tempSig := <-sign
+//
+//			// 输出信号
+//			DebugLog("收到信号:%v", sign)
+//
+//			if tempSig == syscall.SIGHUP {
+//				DebugLog("收到重启的信号，准备重新加载配置")
+//
+//				// 重新加载
+//				systemReload()
+//
+//				DebugLog("收到重启的信号，重新加载配置完成")
+//			} else {
+//				DebugLog("收到退出程序的信号，开始退出……")
+//
+//				// 调用退出的方法
+//				systemExit()
+//				close(sign)
+//
+//				DebugLog("收到退出程序的信号，退出完成……")
+//
+//				// 一旦收到信号，则表明管理员希望退出程序，则先保存信息，然后退出
+//				os.Exit(0)
+//			}
+//		}
+//	})
+//}
 
 func WaitForSystemExit() {
+	sign := make(chan os.Signal)
+	signal.Notify(sign, os.Interrupt, os.Kill, syscall.SIGTERM)
+	<-sign
+	DebugLog("收到退出信号")
+	fmt.Println("收到退出信号")
+	systemExit()
 	waitAllGroup.Wait()
 
 	if !atomic.CompareAndSwapInt32(&logForStopSignal, 0, 1) {

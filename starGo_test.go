@@ -134,11 +134,13 @@ func TestWebSocketClient(t *testing.T) {
 		return
 	}
 
-	go func() {
-		time.Sleep(5 * time.Second)
-		fmt.Println("开始关闭通道")
-		systemExit()
-	}()
+	//Start()
+
+	//go func() {
+	//	time.Sleep(5 * time.Second)
+	//	fmt.Println("开始关闭通道")
+	//	systemExit()
+	//}()
 
 	WaitForSystemExit()
 }
