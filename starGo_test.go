@@ -7,10 +7,10 @@ import (
 	"time"
 )
 
-func TestDebugLog(t *testing.T) {
+func TestInfoLog(t *testing.T) {
 	StartLog("log", Debug)
 
-	DebugLog("qwe")
+	InfoLog("qwe")
 	go func() {
 		time.Sleep(61 * time.Second)
 		stopChanForLog <- struct{}{}
@@ -22,7 +22,7 @@ func TestDebugLog(t *testing.T) {
 	}()
 	go func() {
 		for {
-			DebugLog("输出当前时间:%v", time.Now())
+			InfoLog("输出当前时间:%v", time.Now())
 			InfoLog("输出当前时间:%v", time.Now())
 			WarnLog("输出当前时间:%v", time.Now())
 			ErrorLog("输出当前时间:%v", time.Now())
@@ -43,7 +43,7 @@ func TestCsv_UnMarshalFile(t *testing.T) {
 	inf := make([]abc, 0)
 	cs := NewCsvReader()
 	cs.UnMarshalFile("csv/test.csv", &inf)
-	DebugLog(inf)
+	InfoLog(inf)
 	WaitForSystemExit()
 }
 
@@ -52,42 +52,42 @@ func TestNatPublish(t *testing.T) {
 	StartLog("log", Debug)
 
 	SubscribeQueue("hello", "h1", func(message []byte) {
-		DebugLog("这是队列模式h1.1收到的消息,消息:%v", string(message))
+		InfoLog("这是队列模式h1.1收到的消息,消息:%v", string(message))
 		//fmt.Println(fmt.Sprintf("这是队列模式h1.1收到的消息,消息:%v", string(message)))
 	})
 
 	SubscribeQueue("hello", "h1", func(message []byte) {
-		DebugLog("这是队列模式h1.2收到的消息,消息:%v", string(message))
+		InfoLog("这是队列模式h1.2收到的消息,消息:%v", string(message))
 		//fmt.Println(fmt.Sprintf("这是队列模式h1.2收到的消息,消息:%v", string(message)))
 	})
 
 	SubscribeQueue("hello", "h1", func(message []byte) {
-		DebugLog("这是队列模式h1.3收到的消息,消息:%v", string(message))
+		InfoLog("这是队列模式h1.3收到的消息,消息:%v", string(message))
 		//fmt.Println(fmt.Sprintf("这是队列模式h1.3收到的消息,消息:%v", string(message)))
 	})
 
 	SubscribeQueue("hello", "h2", func(message []byte) {
 		//fmt.Println(fmt.Sprintf("这是队列模式h2.1收到的消息,消息:%v", string(message)))
-		DebugLog("这是队列模式h2.1收到的消息,消息:%v", string(message))
+		InfoLog("这是队列模式h2.1收到的消息,消息:%v", string(message))
 	})
 
 	SubscribeQueue("hello", "h2", func(message []byte) {
 		//fmt.Println(fmt.Sprintf("这是队列模式h2.2收到的消息,消息:%v", string(message)))
-		DebugLog("这是队列模式h2.2收到的消息,消息:%v", string(message))
+		InfoLog("这是队列模式h2.2收到的消息,消息:%v", string(message))
 	})
 
 	SubscribeQueue("hello", "h2", func(message []byte) {
 		//fmt.Println(fmt.Sprintf("这是队列模式h2.3收到的消息,消息:%v", string(message)))
-		DebugLog("这是队列模式h2.3收到的消息,消息:%v", string(message))
+		InfoLog("这是队列模式h2.3收到的消息,消息:%v", string(message))
 	})
 
 	SubscribeAsync("hello", func(message []byte) {
 		//fmt.Println(fmt.Sprintf("这是异步模式收到的消息,消息:%v", string(message)))
-		DebugLog("这是异步模式收到的消息,消息:%v", string(message))
+		InfoLog("这是异步模式收到的消息,消息:%v", string(message))
 	})
 	SubscribeChannel("hello", 1, func(message []byte) {
 		//fmt.Println(fmt.Sprintf("这是管道模式收到的消息,消息:%v", string(message)))
-		DebugLog("这是管道模式收到的消息,消息:%v", string(message))
+		InfoLog("这是管道模式收到的消息,消息:%v", string(message))
 	})
 
 	Publish("hello", []byte("你好呀"))

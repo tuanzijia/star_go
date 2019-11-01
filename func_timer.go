@@ -75,9 +75,9 @@ func callOneMinuteFunc(nowTime time.Time) {
 	defer timerMutex.RUnlock()
 	for name, f := range oneMinuteFunc {
 		startTime := time.Now().UnixNano()
-		DebugLog("开始执行%v方法", name)
+		InfoLog("开始执行%v方法", name)
 		Try(func() { f(nowTime) }, nil)
-		DebugLog("%v方法执行完成,总耗时%v纳秒", name, time.Now().UnixNano()-startTime)
+		InfoLog("%v方法执行完成,总耗时%v纳秒", name, time.Now().UnixNano()-startTime)
 	}
 }
 
@@ -86,9 +86,9 @@ func callFiveMinuteFunc(nowTime time.Time) {
 	defer timerMutex.RUnlock()
 	for name, f := range fiveMinuteFunc {
 		startTime := time.Now().UnixNano()
-		DebugLog("开始执行%v方法", name)
+		InfoLog("开始执行%v方法", name)
 		Try(func() { f(nowTime) }, nil)
-		DebugLog("%v方法执行完成,总耗时%v纳秒", name, time.Now().UnixNano()-startTime)
+		InfoLog("%v方法执行完成,总耗时%v纳秒", name, time.Now().UnixNano()-startTime)
 	}
 }
 
@@ -97,8 +97,8 @@ func callThirtyMinuteFunc(nowTime time.Time) {
 	defer timerMutex.RUnlock()
 	for name, f := range thirtyMinuteFunc {
 		startTime := time.Now().UnixNano()
-		DebugLog("开始执行%v方法", name)
+		InfoLog("开始执行%v方法", name)
 		Try(func() { f(nowTime) }, nil)
-		DebugLog("%v方法执行完成,总耗时%v纳秒", name, time.Now().UnixNano()-startTime)
+		InfoLog("%v方法执行完成,总耗时%v纳秒", name, time.Now().UnixNano()-startTime)
 	}
 }

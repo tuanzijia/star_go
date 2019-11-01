@@ -22,12 +22,12 @@ func handleConn(w http.ResponseWriter, r *http.Request) {
 	client.start()
 	RegisterWebSocketClient(client)
 
-	DebugLog("收到客户端:%v连接请求", client.GetConn().RemoteAddr().String())
+	InfoLog("收到客户端:%v连接请求", client.GetConn().RemoteAddr().String())
 }
 
 // 启动服务器
 func StartWebSocketServer(addr string, url string, handler ClientCallBack, headerLen int32) error {
-	DebugLog("开始监听WebSocket地址:%v,url:%v", addr, url)
+	InfoLog("开始监听WebSocket地址:%v,url:%v", addr, url)
 	http.HandleFunc(url, handleConn)
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {

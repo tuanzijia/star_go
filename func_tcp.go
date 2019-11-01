@@ -3,7 +3,7 @@ package starGo
 import "net"
 
 func StartTcpServer(addr string, handler ClientCallBack, headerLen int32) error {
-	DebugLog("开始监听Tcp地址:%v", addr)
+	InfoLog("开始监听Tcp地址:%v", addr)
 	listen, err := net.Listen("tcp", addr)
 	if err != nil {
 		ErrorLog("tcp监听地址%v出错,错误信息:%v", addr, err)
@@ -31,7 +31,7 @@ func StartTcpServer(addr string, handler ClientCallBack, headerLen int32) error 
 			RegisterTcpClient(client)
 			client.start()
 
-			DebugLog("收到客户端:%v的连接请求", c.RemoteAddr().String())
+			InfoLog("收到客户端:%v的连接请求", c.RemoteAddr().String())
 		}
 	})
 

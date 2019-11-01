@@ -43,7 +43,7 @@ func NewRedis(addr, pwd string, db int) *Redis {
 		ErrorLog("redis连接失败，结果:%v 错误信息:%v", pong, err)
 		panic(fmt.Errorf("redis连接失败,错误信息:%v", err))
 	} else {
-		DebugLog("redis连接成功")
+		InfoLog("redis连接成功")
 	}
 
 	return redisClient

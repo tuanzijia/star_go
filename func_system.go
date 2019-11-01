@@ -15,7 +15,7 @@ func WaitForSystemExit() {
 	sign := make(chan os.Signal)
 	signal.Notify(sign, os.Interrupt, os.Kill, syscall.SIGTERM)
 	<-sign
-	DebugLog("收到退出信号")
+	InfoLog("收到退出信号")
 	systemExit()
 
 	waitAllGroup.Wait()
@@ -36,17 +36,17 @@ func RegisterSystemReloadFunc(f func()) {
 }
 
 func systemExit() {
-	DebugLog("调用退出时方法")
+	InfoLog("调用退出时方法")
 	for _, f := range systemExitFunc {
 		f()
 	}
-	DebugLog("更新停止信号")
+	InfoLog("更新停止信号")
 	// 更新停止信号
 	if !atomic.CompareAndSwapInt32(&allForStopSignal, 0, 1) {
 		return
 	}
 	close(stopChanForGo)
-	DebugLog("关闭所有连接")
+	InfoLog("关闭所有连接")
 	// 关闭所有tcp连接
 	tcpClientMap.Range(func(key, value interface{}) bool {
 		client := value.(*Client)
@@ -71,7 +71,7 @@ func systemExit() {
 		wsClientMap.Delete(key)
 		return true
 	})
-	DebugLog("系统退出方法调用完成")
+	InfoLog("系统退出方法调用完成")
 }
 
 func systemReload() {
@@ -106,7 +106,7 @@ func Daemon(skip ...string) {
 				newCmd = append(newCmd, v)
 			}
 		}
-		DebugLog("后台运行参数:%v", newCmd)
+		InfoLog("后台运行参数:%v", newCmd)
 		cmd := exec.Command(filePath)
 		cmd.Args = newCmd
 		cmd.Start()
