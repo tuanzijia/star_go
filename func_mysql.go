@@ -3,6 +3,7 @@ package starGo
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 type Mysql struct {
@@ -12,7 +13,7 @@ type Mysql struct {
 
 func NewMysql(connection string) *Mysql {
 	mysql := new(Mysql)
-	db, err := gorm.Open(connection)
+	db, err := gorm.Open("mysql", connection)
 	if err != nil {
 		ErrorLog("连接mysql出错,错误信息:%v", err)
 		panic(fmt.Errorf("连接mysql出错,错误信息:%v", err))
