@@ -9,6 +9,8 @@ import (
 
 type ClientCallBack func(message []byte, addr string)
 
+type ClientExpireCallBack func(addr []string)
+
 type Client struct {
 	conn         net.Conn
 	stop         bool
@@ -165,6 +167,7 @@ func clearExpireTcpClient() {
 			})
 
 			// 移除过期的客户端
+			callBackList := make([]string, 0)
 			for _, key := range removeClient {
 				value, exists := tcpClientMap.Load(key)
 				if !exists {
@@ -181,6 +184,11 @@ func clearExpireTcpClient() {
 				client.SetStop()
 				client.GetConn().Close()
 				tcpClientMap.Delete(key)
+				callBackList = append(callBackList, key)
+			}
+
+			if len(callBackList) > 0 && tcpClientExpireHandleFunc != nil {
+				tcpClientExpireHandleFunc(callBackList)
 			}
 		}
 	})

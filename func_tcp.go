@@ -2,7 +2,7 @@ package starGo
 
 import "net"
 
-func StartTcpServer(addr string, handler ClientCallBack, headerLen int32) error {
+func StartTcpServer(addr string, handler ClientCallBack, clientExpireHandler ClientExpireCallBack, headerLen int32) error {
 	InfoLog("开始监听Tcp地址:%v", addr)
 	listen, err := net.Listen("tcp", addr)
 	if err != nil {
@@ -37,6 +37,7 @@ func StartTcpServer(addr string, handler ClientCallBack, headerLen int32) error 
 
 	// 注册回调方法
 	tcpHandlerReceiveFunc = handler
+	tcpClientExpireHandleFunc = clientExpireHandler
 
 	// 记录头部数据长度
 	tcpReceiveDataHeaderLen = headerLen

@@ -26,7 +26,7 @@ func handleConn(w http.ResponseWriter, r *http.Request) {
 }
 
 // 启动服务器
-func StartWebSocketServer(addr string, url string, handler ClientCallBack, headerLen int32) error {
+func StartWebSocketServer(addr string, url string, handler ClientCallBack, clientExpireHandler ClientExpireCallBack, headerLen int32) error {
 	InfoLog("开始监听WebSocket地址:%v,url:%v", addr, url)
 	http.HandleFunc(url, handleConn)
 	err := http.ListenAndServe(addr, nil)
@@ -37,6 +37,7 @@ func StartWebSocketServer(addr string, url string, handler ClientCallBack, heade
 
 	// 注册回调方法
 	wsHandlerReceiveFunc = handler
+	wsClientExpireHandleFunc = clientExpireHandler
 
 	// 记录头部数据长度
 	wsReceiveDataHeaderLen = headerLen

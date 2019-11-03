@@ -145,6 +145,7 @@ func clearExpireWebSocketClient() {
 			})
 
 			// 移除过期的客户端
+			callBackList := make([]string, 0)
 			for _, key := range removeClient {
 				value, exists := wsClientMap.Load(key)
 				if !exists {
@@ -161,6 +162,11 @@ func clearExpireWebSocketClient() {
 				client.SetStop()
 				client.GetConn().Close()
 				wsClientMap.Delete(key)
+				callBackList = append(callBackList, key)
+			}
+
+			if len(callBackList) > 0 && wsClientExpireHandleFunc != nil {
+				wsClientExpireHandleFunc(callBackList)
 			}
 		}
 	})
