@@ -155,8 +155,8 @@ func RegisterTcpClient(c *Client) {
 
 func clearExpireTcpClient() {
 	Go(func(Stop chan struct{}) {
+		t := time.NewTicker(5 * time.Second)
 		for allForStopSignal == 0 {
-			t := time.NewTicker(5 * time.Second)
 			<-t.C
 			removeClient := make([]string, 0)
 			tcpClientMap.Range(func(key, value interface{}) bool {
@@ -189,8 +189,11 @@ func clearExpireTcpClient() {
 				callBackList = append(callBackList, key)
 			}
 
-			if len(callBackList) > 0 && tcpClientExpireHandleFunc != nil {
-				tcpClientExpireHandleFunc(callBackList)
+			if len(callBackList) > 0 {
+				InfoLog("移除过期客户端连接:%v", callBackList)
+				if tcpClientExpireHandleFunc != nil {
+					tcpClientExpireHandleFunc(callBackList)
+				}
 			}
 		}
 	})
