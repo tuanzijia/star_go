@@ -128,7 +128,7 @@ func TestChannel(t *testing.T) {
 func TestWebSocketClient(t *testing.T) {
 	StartLog("log", Debug)
 
-	err := StartTcpServer("127.0.0.1:9999", nil, 4)
+	err := StartTcpServer("127.0.0.1:9999", nil, nil, 4)
 	if err != nil {
 		ErrorLog(err)
 		return
