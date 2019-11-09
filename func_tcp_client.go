@@ -111,9 +111,7 @@ func (c *Client) start() {
 			readBytes := make([]byte, 1024)
 			n, err := c.GetConn().Read(readBytes)
 			if err != nil {
-				if err == io.EOF {
-					ErrorLog("读取消息时收到断开错误：%s，本次读取的字节数为：%d", err, n)
-				} else {
+				if err != io.EOF {
 					ErrorLog("读取消息错误：%s，本次读取的字节数为：%d", err, n)
 				}
 				break
