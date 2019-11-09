@@ -31,7 +31,7 @@ var (
 	waitAllGroup   sync.WaitGroup
 	waitLogGroup   sync.WaitGroup
 	goCount        int32
-	goId           int32
+	goId           uint64
 	stopChanForGo  = make(chan struct{})
 	stopChanForLog = make(chan struct{})
 
