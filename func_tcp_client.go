@@ -25,7 +25,7 @@ func newTcpClient(conn net.Conn) *Client {
 		conn:         conn,
 		stop:         false,
 		activeTime:   time.Now().Unix(),
-		receiveQueue: make([]byte, 1024),
+		receiveQueue: make([]byte, 0),
 		sendCh:       make(chan []byte, 1024),
 	}
 }
@@ -118,9 +118,9 @@ func (c *Client) start() {
 				}
 				break
 			}
+			c.AppendReceiveQueue(readBytes[:n])
 
 			Go(func(Stop chan struct{}) {
-				c.AppendReceiveQueue(readBytes[:n])
 				message, exists := c.GetReceiveData(tcpReceiveDataHeaderLen)
 				if exists && tcpHandlerReceiveFunc != nil {
 					tcpHandlerReceiveFunc(message, c.GetConn().RemoteAddr().String())
