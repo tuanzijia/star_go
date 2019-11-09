@@ -133,7 +133,9 @@ func (c *Client) start() {
 			select {
 			case message := <-c.sendCh:
 				Go(func(Stop chan struct{}) {
-					_, err := c.GetConn().Write(message)
+					header := Int32ToBytes(int32(len(message)), true)
+					header = append(header, message...)
+					_, err := c.GetConn().Write(header)
 					if err != nil {
 						ErrorLog("向客户端:%v发送数据出错,错误信息:%v", c.GetConn().RemoteAddr().String(), err)
 						c.GetConn().Close()
