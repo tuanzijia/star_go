@@ -36,13 +36,12 @@ func RegisterThirtyMinuteFunc(funcName string, f timerFunc) {
 
 func timerStart() {
 	Go(func(Stop chan struct{}) {
+		t := time.NewTicker(1 * time.Second)
 		for allForStopSignal == 0 {
 			select {
 			case <-Stop:
 				return
-			default:
-				t := time.NewTicker(1 * time.Second)
-				<-t.C
+			case <-t.C:
 				nowTime := time.Now()
 
 				// 整分钟数开始执行
@@ -77,7 +76,8 @@ func callOneMinuteFunc(nowTime time.Time) {
 		startTime := time.Now().UnixNano()
 		InfoLog("开始执行%v方法", name)
 		Try(func() { f(nowTime) }, nil)
-		InfoLog("%v方法执行完成,总耗时%v纳秒", name, time.Now().UnixNano()-startTime)
+		useTime := float64(time.Now().UnixNano() - startTime)
+		InfoLog("%v方法执行完成,总耗时%v毫秒", name, useTime/float64(1000000))
 	}
 }
 
@@ -88,7 +88,8 @@ func callFiveMinuteFunc(nowTime time.Time) {
 		startTime := time.Now().UnixNano()
 		InfoLog("开始执行%v方法", name)
 		Try(func() { f(nowTime) }, nil)
-		InfoLog("%v方法执行完成,总耗时%v纳秒", name, time.Now().UnixNano()-startTime)
+		useTime := float64(time.Now().UnixNano() - startTime)
+		InfoLog("%v方法执行完成,总耗时%v毫秒", name, useTime/float64(1000000))
 	}
 }
 
@@ -99,6 +100,7 @@ func callThirtyMinuteFunc(nowTime time.Time) {
 		startTime := time.Now().UnixNano()
 		InfoLog("开始执行%v方法", name)
 		Try(func() { f(nowTime) }, nil)
-		InfoLog("%v方法执行完成,总耗时%v纳秒", name, time.Now().UnixNano()-startTime)
+		useTime := float64(time.Now().UnixNano() - startTime)
+		InfoLog("%v方法执行完成,总耗时%v毫秒", name, useTime/float64(1000000))
 	}
 }
