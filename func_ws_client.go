@@ -125,7 +125,7 @@ func (c *WebSocketClient) start() {
 	})
 }
 
-func RegisterWebSocketClient(c *WebSocketClient) {
+func registerWebSocketClient(c *WebSocketClient) {
 	wsClientMap.Store(c.GetConn().RemoteAddr().String(), c)
 }
 

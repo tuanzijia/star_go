@@ -147,7 +147,7 @@ func (c *Client) start() {
 	})
 }
 
-func RegisterTcpClient(c *Client) {
+func registerTcpClient(c *Client) {
 	tcpClientMap.Store(c.GetConn().RemoteAddr().String(), c)
 }
 

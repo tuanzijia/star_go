@@ -28,7 +28,7 @@ func StartTcpServer(addr string, handler ClientCallBack, clientExpireHandler Cli
 
 			// 新注册客户端
 			client := newTcpClient(c)
-			RegisterTcpClient(client)
+			registerTcpClient(client)
 			client.start()
 
 			InfoLog("收到客户端:%v的连接请求", c.RemoteAddr().String())

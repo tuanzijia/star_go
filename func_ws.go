@@ -20,7 +20,7 @@ func handleConn(w http.ResponseWriter, r *http.Request) {
 	// 新注册客户端
 	client := newWebSocketClient(conn)
 	client.start()
-	RegisterWebSocketClient(client)
+	registerWebSocketClient(client)
 
 	InfoLog("收到客户端:%v连接请求", client.GetConn().RemoteAddr().String())
 }
