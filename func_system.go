@@ -71,6 +71,16 @@ func systemExit() {
 		wsClientMap.Delete(key)
 		return true
 	})
+
+	// 关闭mysql和redis连接
+	InfoLog("关闭mysql和redis连接")
+	if mysqlCfg != nil {
+		mysqlCfg.GetDb().Close()
+	}
+	if redisCfg != nil {
+		redisCfg.GetConnection().Close()
+	}
+
 	InfoLog("系统退出方法调用完成")
 }
 

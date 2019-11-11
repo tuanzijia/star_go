@@ -46,6 +46,7 @@ func NewRedis(addr, pwd string, db int) *Redis {
 		InfoLog("redis连接成功")
 	}
 
+	redisCfg = redisClient
 	return redisClient
 }
 

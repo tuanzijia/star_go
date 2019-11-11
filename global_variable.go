@@ -57,4 +57,7 @@ var (
 
 	natChMap sync.Map
 	natConn  *nats.Conn
+
+	mysqlCfg *Mysql
+	redisCfg *Redis
 )

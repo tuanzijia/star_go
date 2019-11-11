@@ -21,6 +21,7 @@ func NewMysql(connection string) *Mysql {
 
 	mysql.db = db
 	mysql.connectionStr = connection
+	mysqlCfg = mysql
 
 	return mysql
 }
