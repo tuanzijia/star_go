@@ -3,6 +3,7 @@ package starGo
 import (
 	"fmt"
 	"github.com/nats-io/nats.go"
+	"time"
 )
 
 type NatCallBack func(message []byte)
@@ -106,4 +107,14 @@ func Publish(channel string, data []byte) {
 	if err != nil {
 		ErrorLog("发布消息后刷新出错,错误信息:%v", err)
 	}
+}
+
+// 远程rpc调用
+func RpcCall(channel string, data []byte, timeout int32) ([]byte, error) {
+	msg, err := natConn.Request(channel, data, time.Duration(timeout)*time.Second)
+	if err != nil {
+		return nil, err
+	}
+
+	return msg.Data, nil
 }
