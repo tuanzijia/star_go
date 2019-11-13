@@ -10,7 +10,7 @@ type NatCallBack func(result *NatResult)
 
 type NatResult struct {
 	Message []byte
-	Result  string
+	Reply   string
 }
 
 func StartNatConn(addr string) {
@@ -55,7 +55,7 @@ func SubscribeChannel(channel string, channelCount int32, cb NatCallBack) {
 					if cb != nil {
 						result := &NatResult{
 							Message: msg.Data,
-							Result:  msg.Reply,
+							Reply:   msg.Reply,
 						}
 
 						cb(result)
@@ -77,7 +77,7 @@ func SubscribeAsync(channel string, cb NatCallBack) {
 				if cb != nil {
 					result := &NatResult{
 						Message: msg.Data,
-						Result:  msg.Reply,
+						Reply:   msg.Reply,
 					}
 
 					cb(result)
@@ -102,7 +102,7 @@ func SubscribeQueue(channel, queue string, cb NatCallBack) {
 				if cb != nil {
 					result := &NatResult{
 						Message: msg.Data,
-						Result:  msg.Reply,
+						Reply:   msg.Reply,
 					}
 
 					cb(result)
