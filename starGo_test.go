@@ -51,46 +51,57 @@ func TestNatPublish(t *testing.T) {
 	StartNatConn("127.0.0.1:4222")
 	StartLog("log", Debug)
 
-	SubscribeQueue("hello", "h1", func(message []byte) {
-		InfoLog("这是队列模式h1.1收到的消息,消息:%v", string(message))
-		//fmt.Println(fmt.Sprintf("这是队列模式h1.1收到的消息,消息:%v", string(message)))
+	//SubscribeQueue("hello", "h1", func(message []byte) {
+	//	InfoLog("这是队列模式h1.1收到的消息,消息:%v", string(message))
+	//	//fmt.Println(fmt.Sprintf("这是队列模式h1.1收到的消息,消息:%v", string(message)))
+	//})
+	//
+	//SubscribeQueue("hello", "h1", func(message []byte) {
+	//	InfoLog("这是队列模式h1.2收到的消息,消息:%v", string(message))
+	//	//fmt.Println(fmt.Sprintf("这是队列模式h1.2收到的消息,消息:%v", string(message)))
+	//})
+	//
+	//SubscribeQueue("hello", "h1", func(message []byte) {
+	//	InfoLog("这是队列模式h1.3收到的消息,消息:%v", string(message))
+	//	//fmt.Println(fmt.Sprintf("这是队列模式h1.3收到的消息,消息:%v", string(message)))
+	//})
+	//
+	//SubscribeQueue("hello", "h2", func(message []byte) {
+	//	//fmt.Println(fmt.Sprintf("这是队列模式h2.1收到的消息,消息:%v", string(message)))
+	//	InfoLog("这是队列模式h2.1收到的消息,消息:%v", string(message))
+	//})
+	//
+	//SubscribeQueue("hello", "h2", func(message []byte) {
+	//	//fmt.Println(fmt.Sprintf("这是队列模式h2.2收到的消息,消息:%v", string(message)))
+	//	InfoLog("这是队列模式h2.2收到的消息,消息:%v", string(message))
+	//})
+	//
+	//SubscribeQueue("hello", "h2", func(message []byte) {
+	//	//fmt.Println(fmt.Sprintf("这是队列模式h2.3收到的消息,消息:%v", string(message)))
+	//	InfoLog("这是队列模式h2.3收到的消息,消息:%v", string(message))
+	//})
+	//
+	//SubscribeAsync("hello", func(message []byte) {
+	//	//fmt.Println(fmt.Sprintf("这是异步模式收到的消息,消息:%v", string(message)))
+	//	InfoLog("这是异步模式收到的消息,消息:%v", string(message))
+	//})
+	//SubscribeChannel("hello", 1, func(message []byte) {
+	//	//fmt.Println(fmt.Sprintf("这是管道模式收到的消息,消息:%v", string(message)))
+	//	InfoLog("这是管道模式收到的消息,消息:%v", string(message))
+	//})
+
+	//Publish("hello", []byte("你好呀"))
+
+	// Replies
+	SubscribeAsync("help", func(messag *NatResult) {
+		//Publish("help", []byte("I can help!"))
+		Publish(messag.Result, []byte("I can help!"))
 	})
 
-	SubscribeQueue("hello", "h1", func(message []byte) {
-		InfoLog("这是队列模式h1.2收到的消息,消息:%v", string(message))
-		//fmt.Println(fmt.Sprintf("这是队列模式h1.2收到的消息,消息:%v", string(message)))
-	})
-
-	SubscribeQueue("hello", "h1", func(message []byte) {
-		InfoLog("这是队列模式h1.3收到的消息,消息:%v", string(message))
-		//fmt.Println(fmt.Sprintf("这是队列模式h1.3收到的消息,消息:%v", string(message)))
-	})
-
-	SubscribeQueue("hello", "h2", func(message []byte) {
-		//fmt.Println(fmt.Sprintf("这是队列模式h2.1收到的消息,消息:%v", string(message)))
-		InfoLog("这是队列模式h2.1收到的消息,消息:%v", string(message))
-	})
-
-	SubscribeQueue("hello", "h2", func(message []byte) {
-		//fmt.Println(fmt.Sprintf("这是队列模式h2.2收到的消息,消息:%v", string(message)))
-		InfoLog("这是队列模式h2.2收到的消息,消息:%v", string(message))
-	})
-
-	SubscribeQueue("hello", "h2", func(message []byte) {
-		//fmt.Println(fmt.Sprintf("这是队列模式h2.3收到的消息,消息:%v", string(message)))
-		InfoLog("这是队列模式h2.3收到的消息,消息:%v", string(message))
-	})
-
-	SubscribeAsync("hello", func(message []byte) {
-		//fmt.Println(fmt.Sprintf("这是异步模式收到的消息,消息:%v", string(message)))
-		InfoLog("这是异步模式收到的消息,消息:%v", string(message))
-	})
-	SubscribeChannel("hello", 1, func(message []byte) {
-		//fmt.Println(fmt.Sprintf("这是管道模式收到的消息,消息:%v", string(message)))
-		InfoLog("这是管道模式收到的消息,消息:%v", string(message))
-	})
-
-	Publish("hello", []byte("你好呀"))
+	// Requests
+	//msg, err := RpcCall("help", []byte("help me"), 10)
+	//DebugLog(string(msg), err)
+	Publish("help", []byte("你好呀"))
 
 	go func() {
 		time.Sleep(10 * time.Second)

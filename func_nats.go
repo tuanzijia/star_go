@@ -6,7 +6,12 @@ import (
 	"time"
 )
 
-type NatCallBack func(message []byte)
+type NatCallBack func(result *NatResult)
+
+type NatResult struct {
+	Message []byte
+	Result  string
+}
 
 func StartNatConn(addr string) {
 	nc, err := nats.Connect(addr)
@@ -48,7 +53,12 @@ func SubscribeChannel(channel string, channelCount int32, cb NatCallBack) {
 					return
 				case msg := <-ch:
 					if cb != nil {
-						cb(msg.Data)
+						result := &NatResult{
+							Message: msg.Data,
+							Result:  msg.Reply,
+						}
+
+						cb(result)
 					}
 				}
 			}
@@ -65,7 +75,12 @@ func SubscribeAsync(channel string, cb NatCallBack) {
 				return
 			default:
 				if cb != nil {
-					cb(msg.Data)
+					result := &NatResult{
+						Message: msg.Data,
+						Result:  msg.Reply,
+					}
+
+					cb(result)
 				}
 			}
 		})
@@ -85,7 +100,12 @@ func SubscribeQueue(channel, queue string, cb NatCallBack) {
 				return
 			default:
 				if cb != nil {
-					cb(msg.Data)
+					result := &NatResult{
+						Message: msg.Data,
+						Result:  msg.Reply,
+					}
+
+					cb(result)
 				}
 			}
 		})
