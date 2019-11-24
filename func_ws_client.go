@@ -98,7 +98,7 @@ func (c *WebSocketClient) start() {
 				break
 			}
 
-			Go(func(Stop chan struct{}) {
+			Go2(func() {
 				message, exists := c.GetReceiveData(wsReceiveDataHeaderLen, data)
 				if exists && wsHandlerReceiveFunc != nil {
 					wsHandlerReceiveFunc(message, c.GetConn().RemoteAddr().String())
@@ -110,7 +110,7 @@ func (c *WebSocketClient) start() {
 		for !c.GetStop() {
 			select {
 			case message := <-c.sendCh:
-				Go(func(Stop chan struct{}) {
+				Go2(func() {
 					err := c.GetConn().WriteMessage(websocket.BinaryMessage, message)
 					if err != nil {
 						ErrorLog("向客户端:%v发送数据出错,错误信息:%v", c.GetConn().RemoteAddr().String(), err)

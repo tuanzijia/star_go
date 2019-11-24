@@ -21,10 +21,9 @@ func Try(f func(), handler func(interface{})) {
 
 func Go(f func(Stop chan struct{})) {
 	waitAllGroup.Add(1)
-	var debugStr string
 	id := atomic.AddUint64(&goId, 1)
 	c := atomic.AddInt32(&goCount, 1)
-	debugStr = SimpleTack()
+	debugStr := SimpleTack()
 	InfoLog("新开协程 id:%d 当前协程数量:%d 来自:%s", id, c, debugStr)
 
 	go func() {
@@ -32,6 +31,19 @@ func Go(f func(Stop chan struct{})) {
 		waitAllGroup.Done()
 		c = atomic.AddInt32(&goCount, -1)
 		InfoLog("协程运行结束 id:%d 当前协程数量:%d 来自:%s", id, c, debugStr)
+	}()
+}
+
+func Go2(f func()) {
+	waitAllGroup.Add(1)
+	debugStr := SimpleTack()
+	c := atomic.AddInt32(&goCount, 1)
+	InfoLog("新开协程 当前协程数量:%d 来自:%s", c, debugStr)
+	go func() {
+		Try(func() { f() }, nil)
+		waitAllGroup.Done()
+		c = atomic.AddInt32(&goCount, -1)
+		InfoLog("协程运行结束 当前协程数量:%d 来自:%s", c, debugStr)
 	}()
 }
 

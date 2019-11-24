@@ -84,15 +84,10 @@ func (c *UdpClient) read() {
 			case <-Stop:
 				return
 			case receiveData := <-c.receiveCh:
-				Go(func(Stop1 chan struct{}) {
-					select {
-					case <-Stop1:
-						return
-					default:
-						message, exists := c.GetReceiveData(udpReceiveDataHeaderLen, receiveData)
-						if exists && udpHandlerReceiveFunc != nil {
-							udpHandlerReceiveFunc(message, c.GetAddr().String())
-						}
+				Go2(func() {
+					message, exists := c.GetReceiveData(udpReceiveDataHeaderLen, receiveData)
+					if exists && udpHandlerReceiveFunc != nil {
+						udpHandlerReceiveFunc(message, c.GetAddr().String())
 					}
 				})
 			}
@@ -111,13 +106,8 @@ func (c *UdpClient) write() {
 			case <-Stop:
 				return
 			case sendData := <-c.sendCh:
-				Go(func(Stop1 chan struct{}) {
-					select {
-					case <-Stop1:
-						return
-					default:
-						c.conn.WriteToUDP(sendData, c.GetAddr())
-					}
+				Go2(func() {
+					c.conn.WriteToUDP(sendData, c.GetAddr())
 				})
 			}
 		}

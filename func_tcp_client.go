@@ -118,7 +118,7 @@ func (c *Client) start() {
 			}
 			c.AppendReceiveQueue(readBytes[:n])
 
-			Go(func(Stop chan struct{}) {
+			Go2(func() {
 				message, exists := c.GetReceiveData(tcpReceiveDataHeaderLen)
 				if exists && tcpHandlerReceiveFunc != nil {
 					tcpHandlerReceiveFunc(message, c.GetConn().RemoteAddr().String())
@@ -130,7 +130,7 @@ func (c *Client) start() {
 		for !c.GetStop() {
 			select {
 			case message := <-c.sendCh:
-				Go(func(Stop chan struct{}) {
+				Go2(func() {
 					header := Int32ToBytes(int32(len(message)), true)
 					header = append(header, message...)
 					_, err := c.GetConn().Write(header)
