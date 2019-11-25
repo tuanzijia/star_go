@@ -41,25 +41,21 @@ func SubscribeChannel(channel string, channelCount int32, cb NatCallBack) {
 	natChMap.Store(channel, channelCount)
 
 	for i := int32(0); i < channelCount; i++ {
-		Go(func(Stop chan struct{}) {
+		Go2(func() {
 			defer func() {
 				sub.Unsubscribe()
 				sub.Drain()
 			}()
 
 			for allForStopSignal == 0 {
-				select {
-				case <-Stop:
-					return
-				case msg := <-ch:
-					if cb != nil {
-						result := &NatResult{
-							Message: msg.Data,
-							Reply:   msg.Reply,
-						}
-
-						cb(result)
+				msg := <-ch
+				if cb != nil {
+					result := &NatResult{
+						Message: msg.Data,
+						Reply:   msg.Reply,
 					}
+
+					cb(result)
 				}
 			}
 		})
@@ -69,19 +65,14 @@ func SubscribeChannel(channel string, channelCount int32, cb NatCallBack) {
 // 异步模式订阅
 func SubscribeAsync(channel string, cb NatCallBack) {
 	_, err := natConn.Subscribe(channel, func(msg *nats.Msg) {
-		Go(func(Stop chan struct{}) {
-			select {
-			case <-Stop:
-				return
-			default:
-				if cb != nil {
-					result := &NatResult{
-						Message: msg.Data,
-						Reply:   msg.Reply,
-					}
-
-					cb(result)
+		Go2(func() {
+			if cb != nil {
+				result := &NatResult{
+					Message: msg.Data,
+					Reply:   msg.Reply,
 				}
+
+				cb(result)
 			}
 		})
 	})
@@ -94,19 +85,14 @@ func SubscribeAsync(channel string, cb NatCallBack) {
 // 队列模式订阅
 func SubscribeQueue(channel, queue string, cb NatCallBack) {
 	_, err := natConn.QueueSubscribe(channel, queue, func(msg *nats.Msg) {
-		Go(func(Stop chan struct{}) {
-			select {
-			case <-Stop:
-				return
-			default:
-				if cb != nil {
-					result := &NatResult{
-						Message: msg.Data,
-						Reply:   msg.Reply,
-					}
-
-					cb(result)
+		Go2(func() {
+			if cb != nil {
+				result := &NatResult{
+					Message: msg.Data,
+					Reply:   msg.Reply,
 				}
+
+				cb(result)
 			}
 		})
 	})
