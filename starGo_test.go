@@ -95,7 +95,7 @@ func TestNatPublish(t *testing.T) {
 	// Replies
 	SubscribeAsync("help", func(messag *NatResult) {
 		//Publish("help", []byte("I can help!"))
-		Publish(messag.Result, []byte("I can help!"))
+		Publish(messag.Reply, []byte("I can help!"))
 	})
 
 	// Requests
