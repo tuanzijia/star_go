@@ -2,6 +2,8 @@ package starGo
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"net/http"
 	"sync"
 	"testing"
 	"time"
@@ -153,5 +155,18 @@ func TestWebSocketClient(t *testing.T) {
 	//	systemExit()
 	//}()
 
+	WaitForSystemExit()
+}
+
+func TestGo(t *testing.T) {
+	gin.SetMode(gin.ReleaseMode)
+	web := NewWebServer("0.0.0.0:9020", true)
+	web.RegisterRequestHandleFunc(GET, "/hello", func(context *gin.Context) {
+		//firstname := c.DefaultQuery("firstname", "Guest")
+		//lastname := c.Query("lastname") // 是 c.Request.URL.Query().Get("lastname") 的简写
+		//context.String(http.StatusOK, fmt.Sprintln(gin.H{"data": "默认请求"}))
+		context.String(http.StatusOK, "hello,你好呀")
+	})
+	web.StartWebServer()
 	WaitForSystemExit()
 }
