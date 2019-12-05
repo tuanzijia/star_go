@@ -50,7 +50,7 @@ func TestCsv_UnMarshalFile(t *testing.T) {
 }
 
 func TestNatPublish(t *testing.T) {
-	StartNatConn("127.0.0.1:4222")
+	StartNatConn("127.0.0.1:4222", "testNat")
 	StartLog("log", Debug)
 
 	//SubscribeQueue("hello", "h1", func(message []byte) {

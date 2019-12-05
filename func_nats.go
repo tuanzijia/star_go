@@ -13,8 +13,24 @@ type NatResult struct {
 	Reply   string
 }
 
-func StartNatConn(addr string) {
-	nc, err := nats.Connect(addr)
+func StartNatConn(addr, natName string) {
+	option := make([]nats.Option, 0)
+	option = append(option, nats.Name(natName),
+		nats.PingInterval(30*time.Second),
+		nats.MaxPingsOutstanding(5),
+		nats.ReconnectWait(3*time.Second),
+		nats.MaxReconnects(200),
+		nats.DisconnectErrHandler(func(conn *nats.Conn, e error) {
+			ErrorLog("nat连接断开,等待重新连接时间:%v分钟", 10)
+		}),
+		nats.ReconnectHandler(func(conn *nats.Conn) {
+			ErrorLog("nat重新连接，URL:%v", conn.ConnectedUrl())
+		}),
+		nats.ClosedHandler(func(conn *nats.Conn) {
+			ErrorLog("nat退出,err:%v", conn.LastError())
+		}))
+
+	nc, err := nats.Connect(addr, option...)
 
 	if err != nil {
 		ErrorLog("连接nats服务器失败，错误信息:%v", err)
