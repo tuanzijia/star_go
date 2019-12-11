@@ -138,12 +138,6 @@ func log(lv logLv, v ...interface{}) {
 		return
 	}
 
-	//_, file, line, ok := runtime.Caller(3)
-	//if ok {
-	//	i := strings.LastIndex(file, "/") + 1
-	//	prefix = fmt.Sprintf("[%s][%s][%s:%d]:", levstr, Date(), (string)(([]byte(file))[i:]), line)
-	//}
-
 	// 记录日志
 	_, file, line, ok := runtime.Caller(3)
 	if !ok {
