@@ -166,26 +166,41 @@ func log(lv logLv, v ...interface{}) {
 }
 
 func DebugLog(v ...interface{}) {
-	//log(Debug, v...)
-	debug(v...)
+	debugLog(v...)
 }
 
 func InfoLog(v ...interface{}) {
-	log(Info, v...)
+	infoLog(v...)
 }
 
 func WarnLog(v ...interface{}) {
-	log(Warn, v...)
+	warnLog(v...)
 }
 
 func ErrorLog(v ...interface{}) {
-	log(Error, v...)
+	errorLog(v...)
 }
 
 func FatalLog(v ...interface{}) {
-	log(Fatal, v...)
+	fatalLog(v...)
 }
 
-func debug(v ...interface{}) {
+func debugLog(v ...interface{}) {
 	log(Debug, v...)
+}
+
+func infoLog(v ...interface{}) {
+	log(Info, v...)
+}
+
+func warnLog(v ...interface{}) {
+	log(Warn, v...)
+}
+
+func errorLog(v ...interface{}) {
+	log(Error, v...)
+}
+
+func fatalLog(v ...interface{}) {
+	log(Fatal, v...)
 }
