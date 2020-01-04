@@ -169,4 +169,5 @@ func TestGo(t *testing.T) {
 	})
 	web.StartWebServer()
 	WaitForSystemExit()
+	//testing.Benchmark()
 }

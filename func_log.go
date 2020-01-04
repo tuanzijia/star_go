@@ -71,6 +71,9 @@ func reorganizeLog(nowTime time.Time) {
 
 	// 重新开启日志文件流
 	for logLv, logName := range logLvNameMap {
+		if logLv < logNowLv {
+			continue
+		}
 		// 得到最终的文件绝对路径
 		fileName := fmt.Sprintf("%v.log", logName)
 		fileAbsolutePath := filepath.Join(logDirPath, fileName)
@@ -98,6 +101,11 @@ func StartLog(dirPatch string, lv logLv) {
 		}
 
 		for logLv, logName := range logLvNameMap {
+			// 低于当前等级的日志不打开文件
+			if logLv < lv {
+				continue
+			}
+
 			// 得到最终的文件绝对路径
 			fileName := fmt.Sprintf("%v.log", logName)
 			fileAbsolutePath := filepath.Join(dirPatch, fileName)
