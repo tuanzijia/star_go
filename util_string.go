@@ -15,7 +15,7 @@ func GetRandomString(l int) string {
 	bytes := []byte(baseString)
 	var result []byte
 	for i := 0; i < l; i++ {
-		result = append(result, bytes[IntN(len(bytes))])
+		result = append(result, bytes[RandIntN(len(bytes))])
 	}
 	return string(result)
 }
