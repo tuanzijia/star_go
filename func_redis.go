@@ -23,12 +23,13 @@ type Redis struct {
 	conf   *redisConfig
 }
 
-func NewRedis(addr, pwd string, db int) *Redis {
+func NewRedis(addr, pwd string, db int, poolSize int) *Redis {
 	redisClient := &Redis{
 		client: redis.NewClient(&redis.Options{
 			Addr:     addr,
 			Password: pwd,
 			DB:       db,
+			PoolSize: poolSize,
 		}),
 		conf: &redisConfig{
 			Addr: addr,

@@ -11,14 +11,15 @@ type Mysql struct {
 	connectionStr string
 }
 
-func NewMysql(connection string) *Mysql {
+func NewMysql(connection string, maxIdleCount, maxOpenCount int) *Mysql {
 	mysql := new(Mysql)
 	db, err := gorm.Open("mysql", connection)
 	if err != nil {
 		ErrorLog("连接mysql出错,错误信息:%v", err)
 		panic(fmt.Errorf("连接mysql出错,错误信息:%v", err))
 	}
-
+	db.DB().SetMaxIdleConns(maxIdleCount)
+	db.DB().SetMaxOpenConns(maxOpenCount)
 	mysql.db = db
 	mysql.connectionStr = connection
 	mysqlCfg = mysql
