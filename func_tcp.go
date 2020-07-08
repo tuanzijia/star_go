@@ -16,7 +16,7 @@ func StartTcpServer(addr string, handler ClientCallBack, clientExpireHandler Cli
 			case <-Stop1:
 			case <-c:
 			}
-			listen.Close()
+			_ = listen.Close()
 		})
 
 		for allForStopSignal == 0 {

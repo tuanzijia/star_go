@@ -104,7 +104,7 @@ func (c *Client) AppendSendQueue(message []byte) {
 func (c *Client) start() {
 	Go(func(Stop chan struct{}) {
 		defer func() {
-			c.GetConn().Close()
+			_ = c.GetConn().Close()
 			c.SetStop()
 		}()
 		for !c.GetStop() {
@@ -136,7 +136,7 @@ func (c *Client) start() {
 					_, err := c.GetConn().Write(header)
 					if err != nil {
 						ErrorLog("向客户端:%v发送数据出错,错误信息:%v", c.GetConn().RemoteAddr().String(), err)
-						c.GetConn().Close()
+						_ = c.GetConn().Close()
 						c.SetStop()
 					}
 				})
@@ -182,7 +182,7 @@ func clearExpireTcpClient() {
 
 				// 移除过期客户端
 				client.SetStop()
-				client.GetConn().Close()
+				_ = client.GetConn().Close()
 				tcpClientMap.Delete(key)
 				callBackList = append(callBackList, key)
 			}

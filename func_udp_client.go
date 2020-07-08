@@ -107,7 +107,7 @@ func (c *UdpClient) write() {
 				return
 			case sendData := <-c.sendCh:
 				Go2(func() {
-					c.conn.WriteToUDP(sendData, c.GetAddr())
+					_, _ = c.conn.WriteToUDP(sendData, c.GetAddr())
 				})
 			}
 		}

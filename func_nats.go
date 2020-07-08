@@ -59,8 +59,8 @@ func SubscribeChannel(channel string, channelCount int32, cb NatCallBack) {
 	for i := int32(0); i < channelCount; i++ {
 		Go2(func() {
 			defer func() {
-				sub.Unsubscribe()
-				sub.Drain()
+				_ = sub.Unsubscribe()
+				_ = sub.Drain()
 			}()
 
 			for allForStopSignal == 0 {

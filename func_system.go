@@ -67,7 +67,7 @@ func systemExit() {
 	wsClientMap.Range(func(key, value interface{}) bool {
 		client := value.(*WebSocketClient)
 		client.SetStop()
-		client.GetConn().Close()
+		_ = client.GetConn().Close()
 		wsClientMap.Delete(key)
 		return true
 	})
@@ -75,10 +75,10 @@ func systemExit() {
 	// 关闭mysql和redis连接
 	InfoLog("关闭mysql和redis连接")
 	if mysqlCfg != nil {
-		mysqlCfg.GetDb().Close()
+		_ = mysqlCfg.GetDb().Close()
 	}
 	if redisCfg != nil {
-		redisCfg.GetConnection().Close()
+		_ = redisCfg.GetConnection().Close()
 	}
 
 	InfoLog("系统退出方法调用完成")
@@ -119,6 +119,6 @@ func Daemon(skip ...string) {
 		InfoLog("后台运行参数:%v", newCmd)
 		cmd := exec.Command(filePath)
 		cmd.Args = newCmd
-		cmd.Start()
+		_ = cmd.Start()
 	}
 }

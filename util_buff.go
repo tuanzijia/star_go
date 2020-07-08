@@ -8,9 +8,9 @@ import (
 func Int32ToBytes(n int32, bigEndian bool) []byte {
 	bytesBuffer := bytes.NewBuffer([]byte{})
 	if bigEndian {
-		binary.Write(bytesBuffer, binary.BigEndian, n)
+		_ = binary.Write(bytesBuffer, binary.BigEndian, n)
 	} else {
-		binary.Write(bytesBuffer, binary.LittleEndian, n)
+		_ = binary.Write(bytesBuffer, binary.LittleEndian, n)
 	}
 
 	return bytesBuffer.Bytes()
@@ -21,9 +21,9 @@ func BytesToInt32(data []byte, bigEndian bool) int32 {
 
 	var result int32
 	if bigEndian {
-		binary.Read(bytesBuffer, binary.BigEndian, &result)
+		_ = binary.Read(bytesBuffer, binary.BigEndian, &result)
 	} else {
-		binary.Read(bytesBuffer, binary.LittleEndian, &result)
+		_ = binary.Read(bytesBuffer, binary.LittleEndian, &result)
 	}
 
 	return result

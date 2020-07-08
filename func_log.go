@@ -44,7 +44,7 @@ func writeLog(log *logObj) {
 	}
 
 	// 记录日志
-	file.WriteString(log.logInfo)
+	_, _ = file.WriteString(log.logInfo)
 	fmt.Printf("%v", log.logInfo)
 }
 
@@ -57,7 +57,7 @@ func reorganizeLog(nowTime time.Time) {
 		fileName := file.Name()
 
 		// 将文件流关闭
-		file.Close()
+		_ = file.Close()
 		file = nil
 
 		// 重命名文件

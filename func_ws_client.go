@@ -88,7 +88,7 @@ func (c *WebSocketClient) AppendSendQueue(message []byte) {
 func (c *WebSocketClient) start() {
 	Go(func(Stop chan struct{}) {
 		defer func() {
-			c.GetConn().Close()
+			_ = c.GetConn().Close()
 			c.SetStop()
 		}()
 		for !c.GetStop() {
@@ -114,7 +114,7 @@ func (c *WebSocketClient) start() {
 					err := c.GetConn().WriteMessage(websocket.BinaryMessage, message)
 					if err != nil {
 						ErrorLog("向客户端:%v发送数据出错,错误信息:%v", c.GetConn().RemoteAddr().String(), err)
-						c.GetConn().Close()
+						_ = c.GetConn().Close()
 						c.SetStop()
 					}
 				})
@@ -160,7 +160,7 @@ func clearExpireWebSocketClient() {
 
 				// 移除过期客户端
 				client.SetStop()
-				client.GetConn().Close()
+				_ = client.GetConn().Close()
 				wsClientMap.Delete(key)
 				callBackList = append(callBackList, key)
 			}

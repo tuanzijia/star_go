@@ -31,8 +31,8 @@ func StartUdpServer(addr string, handler ClientCallBack, headerLen int32) error 
 
 func listen(conn *net.UDPConn) {
 	// 设置缓冲区
-	conn.SetReadBuffer(1024)
-	conn.SetWriteBuffer(1024)
+	_ = conn.SetReadBuffer(1024)
+	_ = conn.SetWriteBuffer(1024)
 
 	Go(func(Stop chan struct{}) {
 		c := make(chan struct{})
@@ -41,7 +41,7 @@ func listen(conn *net.UDPConn) {
 			case <-Stop1:
 			case <-c:
 			}
-			conn.Close()
+			_ = conn.Close()
 		})
 
 		listenTrue(conn)
