@@ -1,8 +1,9 @@
 package starGo
 
 import (
-	"github.com/gorilla/websocket"
 	"net/http"
+
+	"github.com/gorilla/websocket"
 )
 
 var upgrade = websocket.Upgrader{

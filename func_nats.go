@@ -2,8 +2,9 @@ package starGo
 
 import (
 	"fmt"
-	"github.com/nats-io/nats.go"
 	"time"
+
+	"github.com/nats-io/nats.go"
 )
 
 type NatCallBack func(result *NatResult)

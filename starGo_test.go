@@ -2,11 +2,12 @@ package starGo
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func TestInfoLog(t *testing.T) {

@@ -4,10 +4,11 @@ import (
 	"crypto/md5"
 	"errors"
 	"fmt"
-	"github.com/satori/go.uuid"
 	"runtime"
 	"strings"
 	"unicode"
+
+	"github.com/satori/go.uuid"
 )
 
 // 获取随机长度的字符串

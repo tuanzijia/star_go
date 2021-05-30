@@ -9,6 +9,7 @@ redis包对Redis的连接池进行了部分封装
 
 import (
 	"fmt"
+
 	"github.com/go-redis/redis"
 )
 

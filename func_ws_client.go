@@ -1,9 +1,10 @@
 package starGo
 
 import (
-	"github.com/gorilla/websocket"
 	"sync"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 type WebSocketClient struct {

@@ -1,11 +1,12 @@
 package starGo
 
 import (
-	"github.com/nats-io/nats.go"
 	"math"
 	"math/big"
 	"os"
 	"sync"
+
+	"github.com/nats-io/nats.go"
 )
 
 var (
