@@ -11,7 +11,7 @@ import (
 	"github.com/satori/go.uuid"
 )
 
-// 获取随机长度的字符串
+// GetRandomString 获取随机长度的字符串
 func GetRandomString(l int) string {
 	bytes := []byte(baseString)
 	var result []byte
@@ -21,7 +21,7 @@ func GetRandomString(l int) string {
 	return string(result)
 }
 
-// 检查一个字符串是否是空字符串
+// IsEmpty 检查一个字符串是否是空字符串
 func IsEmpty(content string) bool {
 	if len(content) <= 0 {
 		return true
@@ -32,7 +32,7 @@ func IsEmpty(content string) bool {
 	}) < 0
 }
 
-// 根据不同平台获取换行符
+// GetNewLineString 根据不同平台获取换行符
 func GetNewLineString() string {
 	switch os := runtime.GOOS; os {
 	case "windows":
@@ -42,12 +42,12 @@ func GetNewLineString() string {
 	}
 }
 
-// 获取新的UUID字符串
+// GetNewUUID 获取新的UUID字符串
 func GetNewUUID() string {
 	return fmt.Sprintf("%v", uuid.Must(uuid.NewV4(), nil))
 }
 
-// 判断UUID是否为空
+// IsUUIDEmpty 判断UUID是否为空
 func IsUUIDEmpty(uuid string) bool {
 	if uuid == "" || uuid == "00000000-0000-0000-0000-000000000000" {
 		return true
@@ -56,7 +56,7 @@ func IsUUIDEmpty(uuid string) bool {
 	return false
 }
 
-// 比较UUID是否相等
+// IsUUIDEqual 比较UUID是否相等
 func IsUUIDEqual(uuid1, uuid2 string) bool {
 	u1, err1 := uuid.FromString(uuid1)
 	u2, err2 := uuid.FromString(uuid2)
@@ -66,7 +66,7 @@ func IsUUIDEqual(uuid1, uuid2 string) bool {
 	return uuid.Equal(u1, u2)
 }
 
-// 对字符数组进行MD5加密，并且可以选择返回大、小写
+// Md5Bytes 对字符数组进行MD5加密，并且可以选择返回大、小写
 func Md5Bytes(b []byte, ifUpper bool) string {
 	if len(b) == 0 {
 		panic(errors.New("input []byte can't be empty"))
@@ -82,7 +82,7 @@ func Md5Bytes(b []byte, ifUpper bool) string {
 	}
 }
 
-// 对字符串进行MD5加密，并且可以选择返回大、小写
+// Md5String 对字符串进行MD5加密，并且可以选择返回大、小写
 func Md5String(s string, ifUpper bool) string {
 	if len(s) == 0 {
 		panic(errors.New("input string can't be empty"))
